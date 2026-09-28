@@ -51,9 +51,9 @@ else {
       });
       window.setMenuBarVisibility(false);
       await window.loadFile(path.join(__dirname, "launcher.html"));
-      localServer.events.on("status", (status) =>
-        window?.webContents.send("status", status),
-      );
+      localServer.events.on("status", (status) => {
+        if (window && !window.isDestroyed()) window.webContents.send("status", status);
+      });
     } catch (e) {
       dialog.showErrorBox("Serveren kunne ikke starte", e.message);
       app.quit();
