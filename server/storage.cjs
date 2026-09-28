@@ -79,7 +79,13 @@ class LocalRepository {
     );
     const fd = fs.openSync(temp, "r");
     try {
-      fs.fsyncSync(fd);
+      try {
+        fs.fsyncSync(fd);
+      } catch (error) {
+        // Some synced/virtual filesystems reject fsync with EPERM. The temp
+        // file is still atomically renamed below, so autosave remains safe.
+        if (error.code !== "EPERM" && error.code !== "EACCES") throw error;
+      }
     } finally {
       fs.closeSync(fd);
     }
