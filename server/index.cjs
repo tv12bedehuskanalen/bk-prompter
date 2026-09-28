@@ -222,6 +222,15 @@ async function startServer(options = {}) {
   app.post("/api/update/download", async (req, res, next) => {
     try { res.json(await updater.download()); } catch (e) { next(e); }
   });
+  app.post("/api/update/apply", async (req, res, next) => {
+    try {
+      if (!["127.0.0.1", "::1"].includes(req.socket.remoteAddress)) throw Error("Oppdatering må startes fra denne maskinen.");
+      const current = updater.status();
+      if (!current.downloaded) await updater.download();
+      res.json(updater.openInstaller());
+      setTimeout(() => events.emit("lifecycle", "shutdown"), 300);
+    } catch (e) { next(e); }
+  });
   app.post("/api/update/install", (req, res, next) => {
     try {
       // Installing is deliberately local-only; remote control clients can check status but cannot launch an installer.

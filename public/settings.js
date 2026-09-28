@@ -66,10 +66,9 @@ function renderSystemSettings() {
 function ensureUpdatePanel() {
   const content = $(".system-content");
   if (!content || $("[data-settings-panel=updates]")) return;
-  content.insertAdjacentHTML("beforeend", `<div data-settings-panel="updates" hidden><h2>Programvareoppdatering</h2><p class="muted">Oppdateringer hentes fra GitHub. Prosjekter og innstillinger beholdes ved oppdatering.</p><p id="update-status" class="notice">Gjeldende versjon lastes …</p><div class="transfer-actions"><button id="update-check">Se etter oppdatering</button><button id="update-download" class="primary" disabled>Last ned oppdatering</button><button id="update-install" disabled>Åpne installasjonsprogram</button></div><p id="update-release" class="muted"></p></div>`);
+  content.insertAdjacentHTML("beforeend", `<div data-settings-panel="updates" hidden><h2>Programvareoppdatering</h2><p class="muted">Oppdateringer hentes fra GitHub. Prosjekter og innstillinger beholdes ved oppdatering.</p><p id="update-status" class="notice">Gjeldende versjon lastes …</p><div class="transfer-actions"><button id="update-check">Se etter oppdatering</button><button id="update-download" class="primary" disabled>Oppdater nå</button></div><p id="update-release" class="muted"></p></div>`);
   $("#update-check").onclick = async () => { const result = await fetch("/api/update/check", { method: "POST" }).then((r) => r.json()); renderUpdateStatus(result); };
-  $("#update-download").onclick = async () => { const result = await fetch("/api/update/download", { method: "POST" }).then((r) => r.json()); renderUpdateStatus(result); };
-  $("#update-install").onclick = async () => { const result = await fetch("/api/update/install", { method: "POST" }).then((r) => r.json()); renderUpdateStatus(result); };
+  $("#update-download").onclick = async () => { $("#update-status").textContent = "Oppdaterer …"; const result = await fetch("/api/update/apply", { method: "POST" }).then((r) => r.json()); renderUpdateStatus(result); };
   fetch("/api/update/status").then((r) => r.json()).then(renderUpdateStatus).catch(() => {});
 }
 function renderUpdateStatus(value) {
@@ -83,7 +82,6 @@ function renderUpdateStatus(value) {
   else status.textContent = `Gjeldende versjon: ${value.current || "ukjent"}`;
   if (release) release.textContent = value.release?.notes || "";
   $("#update-download")?.toggleAttribute("disabled", !value.available || value.downloading || !!value.downloaded);
-  $("#update-install")?.toggleAttribute("disabled", !value.downloaded);
 }
 function updateExportLinks() {
   for (const kind of ["project", "program"]) {
