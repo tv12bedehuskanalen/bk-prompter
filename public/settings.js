@@ -77,6 +77,7 @@ function renderUpdateStatus(value) {
   if (value.error) status.textContent = "Oppdatering: " + value.error;
   else if (value.downloading) status.textContent = "Laster ned …";
   else if (value.downloaded) status.textContent = "Oppdateringen er klar. Lukk BK Prompter før installasjon.";
+  else if (value.latest && value.latest !== value.current && !value.asset) status.textContent = `Versjon ${value.latest} er publisert, men installasjonsfilen for denne maskinen er ikke klar ennå.`;
   else if (value.available) status.textContent = `Ny versjon tilgjengelig: ${value.latest} (gjeldende ${value.current})`;
   else if (value.latest) status.textContent = `Du bruker siste versjon (${value.current}).`;
   else status.textContent = `Gjeldende versjon: ${value.current || "ukjent"}`;

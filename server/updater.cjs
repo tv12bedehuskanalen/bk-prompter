@@ -37,7 +37,7 @@ function createUpdater({ currentVersion, dataDir, platform = process.platform, a
       if (!response.ok) throw Error(`GitHub svarte med HTTP ${response.status}.`);
       const release = await response.json();
       const asset = assetForRelease(release, platform, arch);
-      state = { ...state, checking: false, latest: release.tag_name, release: { tag: release.tag_name, name: release.name, url: release.html_url, notes: release.body || "" }, asset: asset ? { name: asset.name, size: asset.size, url: asset.browser_download_url } : null, available: compareVersions(release.tag_name, currentVersion) > 0 };
+      state = { ...state, checking: false, latest: release.tag_name, release: { tag: release.tag_name, name: release.name, url: release.html_url, notes: release.body || "" }, asset: asset ? { name: asset.name, size: asset.size, url: asset.browser_download_url } : null, available: compareVersions(release.tag_name, currentVersion) > 0 && !!asset };
     } catch (error) { state = { ...state, checking: false, error: error.message }; }
     return snapshot();
   }
