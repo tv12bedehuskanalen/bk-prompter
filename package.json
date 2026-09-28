@@ -48,16 +48,14 @@
     ],
     "mac": {
       "target": [
-        "dmg",
-        "zip"
+        "dmg"
       ],
       "category": "public.app-category.productivity",
       "icon": "public/branding/icon.png"
     },
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        "nsis"
       ],
       "icon": "public/branding/icon.png"
     },
