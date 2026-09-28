@@ -35,6 +35,7 @@ jobs:
             dist/*.dmg
             dist/*-Setup.exe
       - name: Attach platform installer immediately
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
